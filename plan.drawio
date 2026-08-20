@@ -1,0 +1,66 @@
+<mxfile host="65bd71144e">
+    <diagram name="Pionowy Schemat Projektu Expense Tracker" id="vertical-expense-tracker-schema">
+        <mxGraphModel dx="1200" dy="2200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="2300" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+
+                <!-- START: ROOT -->
+                <mxCell id="root_node" value="KROK 0: Główny Pakiet Projektu&#xa;com.app.expensetracker&#xa;&#xa;Klasa uruchomieniowa:&#xa;• ExpenseTrackerApplication.java (@SpringBootApplication)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2b2b2b;strokeColor=#000000;fontColor=#ffffff;fontStyle=1;fontSize=12;align=left;spacingLeft=15;" vertex="1" parent="1">
+                    <mxGeometry x="100" y="40" width="620" height="90" as="geometry"/>
+                </mxCell>
+
+                <!-- KROK 1: MODEL -->
+                <mxCell id="step_model" value="1. PAKIET: com.app.expensetracker.model&#xa;(Encje bazodanowe i stałe typy)&#xa;&#xa;• User.java&#xa;  - Adnotacje: @Entity, @Table(name=&quot;users&quot;)&#xa;  - Pola: UUID id (PK), String email, String passwordHash, Instant createdAt&#xa;• Expense.java&#xa;  - Adnotacje: @Entity, @Table(name=&quot;expenses&quot;)&#xa;  - Pola: UUID id (PK), User user (@ManyToOne @JoinColumn(name=&quot;user_id&quot;)),&#xa;          String title, BigDecimal amount, ExpenseCategory category, LocalDate date&#xa;• ExpenseCategory.java (Enum)&#xa;  - Wartości: GROCERIES, LEISURE, ELECTRONICS, UTILITIES, CLOTHING, HEALTH, OTHERS&#xa;• FilterPeriod.java (Enum)&#xa;  - Wartości: PAST_WEEK, PAST_MONTH, LAST_3_MONTHS, CUSTOM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=left;spacingLeft=15;" vertex="1" parent="1">
+                    <mxGeometry x="100" y="170" width="620" height="210" as="geometry"/>
+                </mxCell>
+
+                <!-- KROK 2: DTO -->
+                <mxCell id="step_dto" value="2. PAKIET: com.app.expensetracker.dto&#xa;(Obiekty do przesyłania danych w API)&#xa;&#xa;• RegisterRequestDto.java (record): @NotBlank @Email String email, @NotBlank String password&#xa;• LoginRequestDto.java (record): @NotBlank String email, @NotBlank String password&#xa;• AuthResponseDto.java (record): String token&#xa;• CreateExpenseRequestDto.java (record): @NotBlank String title, @NotNull @Positive BigDecimal amount,&#xa;                                       ExpenseCategory category, LocalDate date&#xa;• UpdateExpenseRequestDto.java (record): String title, BigDecimal amount, ExpenseCategory category, LocalDate date&#xa;• ExpenseDto.java (record): UUID id, String title, BigDecimal amount, ExpenseCategory category, LocalDate date&#xa;• ErrorDto.java (record): String error, Instant timestamp" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;align=left;spacingLeft=15;" vertex="1" parent="1">
+                    <mxGeometry x="100" y="420" width="620" height="180" as="geometry"/>
+                </mxCell>
+
+                <!-- KROK 3: REPOSITORY -->
+                <mxCell id="step_repo" value="3. PAKIET: com.app.expensetracker.repository&#xa;(Warstwa dostępu do bazy danych PostgreSQL / H2)&#xa;&#xa;• UserRepository.java (interface)&#xa;  - Rozszerza: JpaRepository&lt;User, UUID&gt;&#xa;  - Metody: Optional&lt;User&gt; findByEmail(String email), boolean existsByEmail(String email)&#xa;• ExpenseRepository.java (interface)&#xa;  - Rozszerza: JpaRepository&lt;Expense, UUID&gt;&#xa;  - Metody: List&lt;Expense&gt; findAllByUserIdAndDateBetween(UUID userId, LocalDate start, LocalDate end),&#xa;            Optional&lt;Expense&gt; findByIdAndUserId(UUID id, UUID userId),&#xa;            void deleteByIdAndUserId(UUID id, UUID userId)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;align=left;spacingLeft=15;" vertex="1" parent="1">
+                    <mxGeometry x="100" y="640" width="620" height="170" as="geometry"/>
+                </mxCell>
+
+                <!-- KROK 4: CONFIG -->
+                <mxCell id="step_config" value="4. PAKIET: com.app.expensetracker.config&#xa;(Bezpieczeństwo i obsługa JWT)&#xa;&#xa;• JwtService.java (@Service)&#xa;  - Generowanie tokena JWT z userId i emaila, wyciąganie claims, walidacja tokena&#xa;• JwtFilter.java (extends OncePerRequestFilter)&#xa;  - Odczyt nagłówka &quot;Authorization: Bearer &lt;TOKEN&gt;&quot;, weryfikacja i ustawienie SecurityContextHolder&#xa;• SecurityConfig.java (@Configuration, @EnableWebSecurity)&#xa;  - Bean SecurityFilterChain (wyłączenie CSRF, permitAll dla /api/v1/auth/**, dodanie JwtFilter),&#xa;    Bean PasswordEncoder (BCryptPasswordEncoder)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=left;spacingLeft=15;" vertex="1" parent="1">
+                    <mxGeometry x="100" y="850" width="620" height="180" as="geometry"/>
+                </mxCell>
+
+                <!-- KROK 5: MAPPER -->
+                <mxCell id="step_mapper" value="5. PAKIET: com.app.expensetracker.mapper&#xa;(Konwersja między encjami a DTO)&#xa;&#xa;• ExpenseMapper.java (@Component)&#xa;  - Metoda toDto(Expense entity) -&gt; zwraca ExpenseDto&#xa;  - Metoda toEntity(CreateExpenseRequestDto dto, User user) -&gt; zwraca Expense" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;align=left;spacingLeft=15;" vertex="1" parent="1">
+                    <mxGeometry x="100" y="1070" width="620" height="110" as="geometry"/>
+                </mxCell>
+
+                <!-- KROK 6: SERVICE -->
+                <mxCell id="step_service" value="6. PAKIET: com.app.expensetracker.service&#xa;(Logika biznesowa)&#xa;&#xa;• AuthService.java (Interface) / AuthServiceImpl.java (@Service)&#xa;  - register(RegisterRequestDto) -&gt; haszowanie hasła, zapis usera w DB, zwrot tokena JWT&#xa;  - login(LoginRequestDto) -&gt; weryfikacja loginu i hasła, zwrot tokena JWT&#xa;• ExpenseService.java (Interface) / ExpenseServiceImpl.java (@Service)&#xa;  - createExpense(UUID userId, CreateExpenseRequestDto) -&gt; przypisanie usera po ID i zapis&#xa;  - getExpenses(UUID userId, FilterPeriod period) -&gt; obliczenie zakresem dat i pobranie z bazy&#xa;  - updateExpense(...) &amp; deleteExpense(...)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;spacingLeft=15;" vertex="1" parent="1">
+                    <mxGeometry x="100" y="1220" width="620" height="190" as="geometry"/>
+                </mxCell>
+
+                <!-- KROK 7: EXCEPTION -->
+                <mxCell id="step_exception" value="7. PAKIET: com.app.expensetracker.exception&#xa;(Obsługa błędów)&#xa;&#xa;• ExpenseNotFoundException.java (extends RuntimeException)&#xa;• GlobalExceptionHandler.java (@ControllerAdvice)&#xa;  - @ExceptionHandler(MethodArgumentNotValidException.class) -&gt; zwraca ErrorDto (400 Bad Request)&#xa;  - @ExceptionHandler(ExpenseNotFoundException.class) -&gt; zwraca ErrorDto (404 Not Found)&#xa;  - @ExceptionHandler(BadCredentialsException.class) -&gt; zwraca ErrorDto (401 Unauthorized)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;align=left;spacingLeft=15;" vertex="1" parent="1">
+                    <mxGeometry x="100" y="1450" width="620" height="160" as="geometry"/>
+                </mxCell>
+
+                <!-- KROK 8: CONTROLLER -->
+                <mxCell id="step_controller" value="8. PAKIET: com.app.expensetracker.controller&#xa;(Endpoints REST API)&#xa;&#xa;• AuthController.java (@RestController, @RequestMapping(&quot;/api/v1/auth&quot;))&#xa;  - @PostMapping(&quot;/register&quot;) register(@Valid @RequestBody RegisterRequestDto dto)&#xa;  - @PostMapping(&quot;/login&quot;) login(@Valid @RequestBody LoginRequestDto dto)&#xa;• ExpenseController.java (@RestController, @RequestMapping(&quot;/api/v1/expenses&quot;))&#xa;  - @PostMapping createExpense(@AuthenticationPrincipal UUID userId, @Valid @RequestBody CreateExpenseRequestDto dto)&#xa;  - @GetMapping getExpenses(@AuthenticationPrincipal UUID userId, @RequestParam FilterPeriod period)&#xa;  - @PutMapping(&quot;/{id}&quot;) updateExpense(...)&#xa;  - @DeleteMapping(&quot;/{id}&quot;) deleteExpense(...)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;align=left;spacingLeft=15;" vertex="1" parent="1">
+                    <mxGeometry x="100" y="1650" width="620" height="200" as="geometry"/>
+                </mxCell>
+
+                <!-- POŁĄCZENIA STRZAŁKAMI W DÓŁ -->
+                <mxCell id="arr1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;entryX=0.5;entryY=0;" edge="1" parent="1" source="root_node" target="step_model"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="arr2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;entryX=0.5;entryY=0;" edge="1" parent="1" source="step_model" target="step_dto"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="arr3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;entryX=0.5;entryY=0;" edge="1" parent="1" source="step_dto" target="step_repo"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="arr4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;entryX=0.5;entryY=0;" edge="1" parent="1" source="step_repo" target="step_config"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="arr5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;entryX=0.5;entryY=0;" edge="1" parent="1" source="step_config" target="step_mapper"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="arr6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;entryX=0.5;entryY=0;" edge="1" parent="1" source="step_mapper" target="step_service"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="arr7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;entryX=0.5;entryY=0;" edge="1" parent="1" source="step_service" target="step_exception"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="arr8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;entryX=0.5;entryY=0;" edge="1" parent="1" source="step_exception" target="step_controller"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
