@@ -16,6 +16,7 @@ import java.util.UUID;
 public class User{
 
     @Id
+    @Column(name = "user_id",nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
