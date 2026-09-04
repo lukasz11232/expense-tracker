@@ -1,8 +1,8 @@
 # Expense Tracker
 
-Aplikacja REST API do zarządzania wydatkami użytkownika. Projekt wykorzystuje Spring Boot, Spring Data JPA, Spring Security, JWT oraz bazę MySQL.
+A REST API for managing user expenses. The project uses Spring Boot, Spring Data JPA, Spring Security, JWT, and MySQL.
 
-## Technologie
+## Technologies
 
 - Java 25
 - Spring Boot 4.1
@@ -13,21 +13,21 @@ Aplikacja REST API do zarządzania wydatkami użytkownika. Projekt wykorzystuje 
 - MySQL
 - Maven
 
-## Wymagania
+## Requirements
 
 - Java 25
 - Maven lub Maven Wrapper
 - XAMPP/MySQL
 
-## Konfiguracja bazy danych
+## Database setup
 
-Uruchom MySQL i utwórz bazę:
+Start MySQL and create the database:
 
 ```sql
 CREATE DATABASE expense_tracker;
 ```
 
-Domyślna konfiguracja znajduje się w pliku `src/main/resources/application.properties`:
+The default configuration is located in `src/main/resources/application.properties`:
 
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/expense_tracker
@@ -35,25 +35,25 @@ spring.datasource.username=root
 spring.datasource.password=
 ```
 
-Jeśli baza ma inne dane logowania, zmień je w tym pliku.
+If your database uses different credentials, update this file.
 
-## Uruchomienie
+## Running the application
 
-Windows:
+On Windows:
 
 ```powershell
 .\mvnw.cmd spring-boot:run
 ```
 
-Aplikacja uruchomi się pod adresem:
+The application will be available at:
 
 ```text
 http://localhost:8080
 ```
 
-## Endpointy
+## Endpoints
 
-### Rejestracja
+### Registration
 
 `POST /api/v1/auth/register`
 
@@ -64,7 +64,7 @@ http://localhost:8080
 }
 ```
 
-### Logowanie
+### Login
 
 `POST /api/v1/auth/login`
 
@@ -75,32 +75,32 @@ http://localhost:8080
 }
 ```
 
-Po zalogowaniu token JWT należy przekazywać w nagłówku:
+After logging in, send the JWT token in the following header:
 
 ```text
 Authorization: Bearer <token>
 ```
 
-Jeżeli endpoint logowania nie zwraca jeszcze tokena, należy najpierw dokończyć implementację `AuthServiceImpl`.
+If the login endpoint does not return a token yet, finish the `AuthServiceImpl` implementation first.
 
-### Dodanie wydatku
+### Create an expense
 
 `POST /api/v1/expenses`
 
 ```json
 {
-  "title": "Zakupy spożywcze",
+  "title": "Grocery shopping",
   "amount": 125.50,
   "category": "FOOD",
   "date": "2026-09-04"
 }
 ```
 
-### Pobranie wydatków
+### Get expenses
 
 `GET /api/v1/expenses?period=PAST_WEEK`
 
-Dostępne wartości `period`:
+Available `period` values:
 
 - `PAST_WEEK`
 - `PAST_MONTH`
@@ -108,7 +108,7 @@ Dostępne wartości `period`:
 - `PAST_YEAR`
 - `CUSTOM`
 
-## Kategorie wydatków
+## Expense categories
 
 ```text
 FOOD
@@ -122,13 +122,13 @@ TRAVEL
 OTHER
 ```
 
-## Testowanie w Postmanie
+## Testing with Postman
 
-1. Uruchom aplikację i MySQL.
-2. Wyślij żądanie logowania.
-3. Skopiuj token JWT z odpowiedzi.
-4. W żądaniach do `/api/v1/expenses` ustaw:
+1. Start the application and MySQL.
+2. Send a login request.
+3. Copy the JWT token from the response.
+4. For requests to `/api/v1/expenses`, set:
    - `Authorization`: Bearer Token
-   - wartość: skopiowany token
+   - value: the copied token
    - `Content-Type`: `application/json`
-5. Wyślij żądanie utworzenia lub pobrania wydatków.
+5. Send a request to create or retrieve expenses.
