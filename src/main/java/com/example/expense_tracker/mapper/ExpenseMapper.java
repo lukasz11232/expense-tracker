@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ExpenseMapper{
-    ExpenseDto toDto(Expense entity){
+    public ExpenseDto toDto(Expense entity){
         return new ExpenseDto(
                 entity.getId(),
                 entity.getTitle(),
@@ -17,7 +17,7 @@ public class ExpenseMapper{
                 entity.getCreatedAt()
         );
     }
-    Expense toEntity(CreateExpensRequestDto dto,User user){
+    public Expense toEntity(CreateExpensRequestDto dto,User user){
         return new Expense(
                 null,// id zostasnie automatycznie wygenerowanie przez baze dancyh @GeneratedValue
                 user,
