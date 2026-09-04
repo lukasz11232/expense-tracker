@@ -6,8 +6,8 @@ import com.example.expense_tracker.dto.UpdateExpenseRequestDto;
 import com.example.expense_tracker.entity.Expense;
 import com.example.expense_tracker.entity.FilterPeriod;
 import com.example.expense_tracker.mapper.ExpenseMapper;
-import com.example.expense_tracker.respository.ExpenseRespository;
-import com.example.expense_tracker.respository.UserRepository;
+import com.example.expense_tracker.repository.ExpenseRepository;
+import com.example.expense_tracker.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -19,12 +19,12 @@ import java.util.UUID;
 @Service
 public class ExpenseServiceImpl implements ExpenseService {
 
-    private final ExpenseRespository expenseRepository;
+    private final ExpenseRepository expenseRepository;
     private final UserRepository userRepository;
     private final ExpenseMapper expenseMapper;
 
     public ExpenseServiceImpl(
-            ExpenseRespository expenseRepository,
+            ExpenseRepository expenseRepository,
             UserRepository userRepository,
             ExpenseMapper expenseMapper
     ) {
@@ -70,7 +70,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         LocalDate today = LocalDate.now();
         LocalDate startDate = getDateFromPeriod(period);
 
-        return expenseRepository.FindAllByUserIdDateBetween(userId, startDate, today);
+        return expenseRepository.findByUser_IdAndExpenseDateBetween(userId, startDate, today);
     }
 
     @Override
@@ -85,5 +85,10 @@ public class ExpenseServiceImpl implements ExpenseService {
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
         expenseRepository.deleteByIdAndUserId(request.id(), userId);
+    }
+
+    @Override
+    public List<Expense> getAllExpenses(){
+        return expenseRepository.findAll();
     }
 }

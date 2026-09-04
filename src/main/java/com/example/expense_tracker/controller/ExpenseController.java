@@ -33,15 +33,6 @@ public class ExpenseController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping
-    public ResponseEntity<Void> getExpense(
-            @AuthenticationPrincipal UUID userId,
-            @Valid @RequestBody FilterPeriod period
-    ) {
-        expenseService.getExpense(userId, period);
-        return ResponseEntity.ok().build();
-    }
-
     @GetMapping
     public ResponseEntity<List<Expense>> getExpenses(
             @AuthenticationPrincipal UUID userId,

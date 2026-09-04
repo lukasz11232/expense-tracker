@@ -14,4 +14,5 @@ public interface ExpenseService {
     List<Expense> getExpense(UUID userId, FilterPeriod period);
     void updateExpense(UUID userId, UpdateExpenseRequestDto request);
     void deleteExpense(UUID userId, DeleteExpenseRequestDto request);
+    List<Expense> getAllExpenses();
 }
