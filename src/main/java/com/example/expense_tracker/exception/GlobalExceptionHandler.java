@@ -28,12 +28,12 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
-    @ExceptionHandler( ExpenseNotFoundExpection.class)
+    @ExceptionHandler(ExpenseNotFoundException.class)
     public ResponseEntity<ErrorDto> handleExpenseNotFound( ExpenseNotFoundException ex ) {
         ErrorDto error = new ErrorDto(
-                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND,
                 ex.getMessage(),
-                LocalDateTime.now()
+                Instant.now()
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error); // HTTP 404
     }
