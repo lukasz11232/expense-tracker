@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
-    @ExceptionHandler(new ExpenseNotFoundExpection.class)
+    @ExceptionHandler( ExpenseNotFoundExpection.class)
     public ResponseEntity<ErrorDto> handleExpenseNotFound( ExpenseNotFoundException ex ) {
         ErrorDto error = new ErrorDto(
                 HttpStatus.NOT_FOUND.value(),
