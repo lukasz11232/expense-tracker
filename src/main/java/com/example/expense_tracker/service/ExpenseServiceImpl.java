@@ -1,9 +1,11 @@
 package com.example.expense_tracker.service;
 
 import com.example.expense_tracker.dto.CreateExpensRequestDto;
+import com.example.expense_tracker.dto.DeleteExpenseRequestDto;
 import com.example.expense_tracker.dto.UpdateExpenseRequestDto;
 import com.example.expense_tracker.entity.Expense;
 import com.example.expense_tracker.entity.FilterPeriod;
+import com.example.expense_tracker.exception.ExpenseNotFoundException;
 import com.example.expense_tracker.mapper.ExpenseMapper;
 import com.example.expense_tracker.respository.ExpenseRespository;
 import com.example.expense_tracker.respository.UserRepository;
@@ -86,7 +88,11 @@ public class ExpenseServiceImpl implements ExpenseService{
     }
 
     @Override
+    @Transactional
     public void deleteExpense(UUID userId,DeleteExpenseRequestDto request){
-
+        var user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+        var optExpense = expenseRepository.findByIdAndUserId(request.id(), userId);
+        var expense = optExpense.orElseThrow(() -> new ExpenseNotFoundException("Expense not found: " + request.id()));
+        expenseRepository.delete(expense);
     }
 }
