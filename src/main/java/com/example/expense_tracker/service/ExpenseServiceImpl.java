@@ -1,6 +1,6 @@
 package com.example.expense_tracker.service;
 
-import com.example.expense_tracker.dto.CreateExpensRequestDto;
+import com.example.expense_tracker.dto.CreateExpenseRequestDto;
 import com.example.expense_tracker.dto.DeleteExpenseRequestDto;
 import com.example.expense_tracker.dto.UpdateExpenseRequestDto;
 import com.example.expense_tracker.entity.Expense;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class ExpenseServiceImpl implements ExpenseService{
+public class ExpenseServiceImpl implements ExpenseService {
 
     private final ExpenseRespository expenseRepository;
     private final UserRepository userRepository;
@@ -27,69 +27,63 @@ public class ExpenseServiceImpl implements ExpenseService{
             ExpenseRespository expenseRepository,
             UserRepository userRepository,
             ExpenseMapper expenseMapper
-    ){
+    ) {
         this.expenseRepository = expenseRepository;
         this.userRepository = userRepository;
         this.expenseMapper = expenseMapper;
     }
 
-
     @Override
     @Transactional
-    public void createExpense(UUID userId,CreateExpensRequestDto request){
-        var user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+    public void createExpense(UUID userId, CreateExpenseRequestDto request) {
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
 
         Expense expense = expenseMapper.toEntity(request, user);
         expenseRepository.save(expense);
     }
-    private LocalDate getDateFromPeriod(FilterPeriod period){
+
+    private LocalDate getDateFromPeriod(FilterPeriod period) {
         LocalDate today = LocalDate.now();
         LocalDate startDate;
 
-
-        switch(period){
-            case PAST_WEEK :
+        switch (period) {
+            case PAST_WEEK:
                 startDate = today.minusWeeks(1);
                 break;
-            case PAST_MONTH :
+            case PAST_MONTH:
                 startDate = today.minusMonths(1);
                 break;
-            case PAST_YEAR  :
+            case PAST_YEAR:
                 startDate = today.minusYears(1);
                 break;
             case CUSTOM:
-                //TODO: Implement custom period logic
                 throw new UnsupportedOperationException("Custom period is not implemented yet.");
-            default :
+            default:
                 throw new IllegalArgumentException("Invalid period: " + period);
         }
         return startDate;
     }
 
     @Override
-    public List<Expense> getExpense(UUID userId,FilterPeriod period){
-
+    public List<Expense> getExpense(UUID userId, FilterPeriod period) {
         LocalDate today = LocalDate.now();
-        LocalDate startDate;
+        LocalDate startDate = getDateFromPeriod(period);
 
-        startDate = getDateFromPeriod(period);
-
-
-        return  expenseRepository.FindAllByUserIdDateBetween(userId, startDate,today);
-    //TODO: Check type of period and return the expenses accordingly
-
+        return expenseRepository.FindAllByUserIdDateBetween(userId, startDate, today);
     }
 
     @Override
-    public void updateExpense(UUID userId, UpdateExpenseRequestDto request){
-        var user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+    public void updateExpense(UUID userId, UpdateExpenseRequestDto request) {
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
         expenseRepository.save(expenseMapper.toEntity(request, user));
     }
 
     @Override
-    public void deleteExpense(UUID userId,DeleteExpenseRequestDto request){
-        var user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+    public void deleteExpense(UUID userId, DeleteExpenseRequestDto request) {
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
         expenseRepository.deleteByIdAndUserId(request.id(), userId);
     }
-
 }

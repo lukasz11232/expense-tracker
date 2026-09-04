@@ -8,15 +8,15 @@ import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public record CreateExpensRequestDto(
+public record CreateExpenseRequestDto(
         @NotBlank(message = "Title is required")
-            String title,
+        String title,
         @NotNull(message = "Amount is required")
-                @Positive( message = "Amount must be positive")
-            BigDecimal amount,
-        @NotBlank(message = "Category is required")
-            ExpenseCategory category,
-        @NotBlank(message = "Date is required")
-            LocalDate date
-){
+        @Positive(message = "Amount must be positive")
+        BigDecimal amount,
+        @NotNull(message = "Category is required")
+        ExpenseCategory category,
+        @NotNull(message = "Date is required")
+        LocalDate date
+) {
 }
