@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface ExpenseService {
     void createExpense(UUID userId, CreateExpenseRequestDto request);
     List<Expense> getExpense(UUID userId, FilterPeriod period);
-    void updateExpense(UUID userId, UpdateExpenseRequestDto request);
-    void deleteExpense(UUID userId, DeleteExpenseRequestDto request);
+    void updateExpense(UUID userId, UUID expenseId, UpdateExpenseRequestDto request);
+    void deleteExpense(UUID userId, UUID expenseId);
     List<Expense> getAllExpenses();
 }

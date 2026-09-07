@@ -31,8 +31,10 @@ public class ExpenseMapper {
     }
 
     public Expense toEntity(UpdateExpenseRequestDto dto, User user) {
+        // This mapper overload should not assign the user's id as the expense id.
+        // Keep id null here; callers that perform updates should load the existing entity and modify it.
         return new Expense(
-                user.getId(),
+                null,
                 user,
                 dto.title(),
                 dto.amount(),

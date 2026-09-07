@@ -43,16 +43,16 @@ public class ExpenseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateExpense(@AuthenticationPrincipal UUID userId,@Valid @RequestBody UpdateExpenseRequestDto dto) {
-        expenseService.updateExpense(userId, dto);
+    public ResponseEntity<Void> updateExpense(@AuthenticationPrincipal UUID userId, @PathVariable UUID id, @Valid @RequestBody UpdateExpenseRequestDto dto) {
+        expenseService.updateExpense(userId, id, dto);
         return ResponseEntity.ok().build();
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteExpense(
             @AuthenticationPrincipal UUID userId,
-            DeleteExpenseRequestDto request
+            @PathVariable UUID id
     ) {
-        expenseService.deleteExpense(userId, request);
+        expenseService.deleteExpense(userId, id);
         return ResponseEntity.noContent().build();
     }
 

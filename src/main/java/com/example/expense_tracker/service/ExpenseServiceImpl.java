@@ -74,17 +74,24 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public void updateExpense(UUID userId, UpdateExpenseRequestDto request) {
+    public void updateExpense(UUID userId, UUID expenseId, UpdateExpenseRequestDto request) {
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
-        expenseRepository.save(expenseMapper.toEntity(request, user));
+        var expense = expenseRepository.findByIdAndUserId(expenseId, userId)
+                .orElseThrow(() -> new EntityNotFoundException("Expense not found: " + expenseId));
+        // apply updates
+        expense.setTitle(request.title());
+        expense.setAmount(request.amount());
+        expense.setCategory(request.category());
+        expense.setExpenseDate(request.date());
+        expenseRepository.save(expense);
     }
 
     @Override
-    public void deleteExpense(UUID userId, DeleteExpenseRequestDto request) {
+    public void deleteExpense(UUID userId, UUID expenseId) {
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
-        expenseRepository.deleteByIdAndUserId(request.id(), userId);
+        expenseRepository.deleteByIdAndUserId(expenseId, userId);
     }
 
     @Override

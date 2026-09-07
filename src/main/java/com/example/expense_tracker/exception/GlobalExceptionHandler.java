@@ -14,12 +14,13 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(MethodNotAllowedException.class)
     public ResponseEntity<ErrorDto> handleMethodNotAllowed(MethodArgumentNotValidException ex) {
-        String message = ex.getBindingResult().getFieldError().getDefaultMessage();
+        String message = Objects.requireNonNull(ex.getBindingResult().getFieldError()).getDefaultMessage();
 
         ErrorDto error = new ErrorDto(
                 HttpStatus.BAD_REQUEST,
